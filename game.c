@@ -1,12 +1,11 @@
 /*This source code copyrighted by Lazy Foo' Productions (2004-2019)
 and may not be redistributed without written permission.*/
 
-//Using SDL and standard IO
-#include <SDL.h>
+#include "loop.h"
+#include "event_codes.h"
 #include <stdio.h>
 #include <stdbool.h>
 #include <math.h>
-
 
 //Screen dimension constants
 const int SCREEN_WIDTH = 640;
@@ -23,9 +22,6 @@ void stop();
 
 //The window we'll be rendering to
 SDL_Window* gWindow = NULL;
-
-//The surface contained by the window
-SDL_Surface* gScreenSurface = NULL;
 
 //The image we will load and show on the screen
 SDL_Surface* gHelloWorld = NULL;
@@ -50,11 +46,6 @@ bool init()
 			printf( "Window could not be created! SDL_Error: %s\n", SDL_GetError() );
 			success = false;
 		}
-		else
-		{
-			//Get window surface
-			gScreenSurface = SDL_GetWindowSurface( gWindow );
-		}
 	}
 
 	return success;
@@ -66,7 +57,7 @@ bool loadMedia()
 	bool success = true;
 
 	//Load splash image
-	gHelloWorld = SDL_LoadBMP( "hello_world.bmp" );
+	gHelloWorld = SDL_LoadBMP( "resources/hello_world.bmp" );
 	if( gHelloWorld == NULL )
 	{
 		printf( "Unable to load image %s! SDL Error: %s\n", "02_getting_an_image_on_the_screen/hello_world.bmp", SDL_GetError() );
@@ -110,28 +101,21 @@ int main( int argc, char* args[] )
 
 			SDL_Event e;
 
-			SDL_Rect dstrect;
-			dstrect.x = 100;
-			dstrect.y = 100;
-
 			int frame = 0;
 
 			while (!quit) {
 				int result;
 				do {
 					result = SDL_PollEvent(&e);
-					if (e.window.type == SDL_QUIT) {
-						quit = true;
+					int code = events(&e);
+					switch (code) {
+						case CODE_QUIT:
+							quit = true;
 					}
 				} while (result != 0);
 
-				gScreenSurface = SDL_GetWindowSurface( gWindow );
-
-				dstrect.x = (int) (sin(((double)frame) / 100) * 100);
-				dstrect.y = (int) (cos(((double)frame) / 100) * 100);
-
-				//Apply the image
-				SDL_BlitSurface( gHelloWorld, NULL, gScreenSurface, &dstrect );
+				double dt = 1/60;
+				loop(gWindow, dt, frame);
 
 				//Update the surface
 				SDL_UpdateWindowSurface( gWindow );

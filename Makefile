@@ -1,5 +1,5 @@
 #OBJS specifies which files to compile as part of the project
-OBJS = test.c
+OBJS = loop.c game.c
 
 #OBJ_NAME specifies the name of our exectuable
 OBJ_NAME = out
