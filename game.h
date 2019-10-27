@@ -4,9 +4,7 @@
 #include <SDL.h>
 
 void init();
-
 int event(SDL_Event* event);
-
 void loop(SDL_Window* window, double dt, int frame);
 
 #endif

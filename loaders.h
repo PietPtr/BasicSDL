@@ -3,6 +3,6 @@
 
 #include <SDL.h>
 
-void loadBMP(char* name, SDL_Surface* surface);
+SDL_Surface* loadBMP(char* name);
 
 #endif
