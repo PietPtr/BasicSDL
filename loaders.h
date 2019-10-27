@@ -3,6 +3,6 @@
 
 #include <SDL.h>
 
-SDL_Surface* loadBMP(char* name);
+SDL_Texture* loadBMP(char* name);
 
 #endif

@@ -1,16 +1,16 @@
 
 #include "game.h"
 #include "loaders.h"
-#include "event_codes.h"
+#include "consts.h"
 #include <stdbool.h>
 #include <math.h>
 
-SDL_Surface* gScreenSurface = NULL;
-SDL_Surface* gHelloWorld = NULL;
+SDL_Surface* screen = NULL;
+SDL_Texture* tHello = NULL;
 
 void init()
 {
-    gHelloWorld = loadBMP("resources/hello_world.bmp");
+    tHello = loadBMP("resources/hello_world.bmp");
 }
 
 int events(SDL_Event* event)
@@ -22,17 +22,20 @@ int events(SDL_Event* event)
     }
 }
 
-void loop(SDL_Window* window, double dt, int frame)
+void loop(SDL_Renderer* renderer, double dt, int frame)
 {
-    gScreenSurface = SDL_GetWindowSurface( window );
+    // screen = SDL_GetWindowSurface( window );
 
     SDL_Rect dstrect;
-	dstrect.x = sin((double)frame / 100) * 100;
+	dstrect.x = sin((double)frame / 6000) * 100;
 	dstrect.y = 0;
+    dstrect.w = SCREEN_WIDTH;
+    dstrect.h = SCREEN_HEIGHT;
 
-    SDL_BlitSurface(gHelloWorld, NULL, gScreenSurface, &dstrect);
+    // SDL_BlitSurface(bmpHello, NULL, screen, &dstrect);
+    SDL_RenderCopy(renderer, tHello, NULL, &dstrect);
 
-    if ( frame % 60 == 0 ) {
+    if ( frame % 1000 == 0 ) {
         printf("%f\n", 1 / dt);
     }
 }

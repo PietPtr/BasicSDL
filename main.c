@@ -1,19 +1,15 @@
 #include "game.h"
-#include "event_codes.h"
+#include "consts.h"
+#include "main.h"
 #include <stdio.h>
 #include <stdbool.h>
 #include <math.h>
 #include <sys/time.h>
 
-const int SCREEN_WIDTH = 640;
-const int SCREEN_HEIGHT = 480;
+SDL_Window* window = NULL;
+SDL_Renderer* renderer = NULL;
 
-bool initialize();
-void stop();
-
-SDL_Window* gWindow = NULL;
-
-bool initialize()
+bool initialize(int scale)
 {
     //Initialization flag
     bool success = true;
@@ -21,15 +17,20 @@ bool initialize()
     //Initialize SDL
     if ( SDL_Init( SDL_INIT_VIDEO ) < 0 ) {
         printf( "SDL could not initialize! SDL_Error: %s\n", SDL_GetError() );
-        success = false;
-    } else {
-        //Create window
-        gWindow = SDL_CreateWindow( "SDL Tutorial", 100, 100, SCREEN_WIDTH, SCREEN_HEIGHT, SDL_WINDOW_SHOWN );
-        if( gWindow == NULL ) {
-            printf( "Window could not be created! SDL_Error: %s\n", SDL_GetError() );
-            success = false;
-        }
+		return false;
     }
+
+    window = SDL_CreateWindow( "SDL", 100, 100, SCREEN_WIDTH * scale, SCREEN_HEIGHT * scale, SDL_WINDOW_SHOWN );
+    if( window == NULL ) {
+        printf( "Window could not be created! SDL_Error: %s\n", SDL_GetError() );
+		return false;
+    }
+
+	renderer = SDL_CreateRenderer(window, -1, SDL_RENDERER_ACCELERATED);
+	SDL_SetRenderDrawColor(renderer, 255, 100, 0, 255);
+
+	int error = SDL_RenderSetScale(renderer, scale, scale);
+	// printf("error %s %p\n", SDL_GetError(), renderer);
 
 	init();
 
@@ -38,18 +39,19 @@ bool initialize()
 
 void stop()
 {
-    SDL_DestroyWindow( gWindow );
-    gWindow = NULL;
+    SDL_DestroyWindow( window );
+    window = NULL;
     SDL_Quit();
 }
 
 int main( int argc, char* args[] )
 {
-    //Start up SDL and create window
-    if( !initialize() ) {
-        printf( "Failed to initialize!\n" );
-        return 1;
-    }
+	int scale = parseScale(argc, args);
+
+	if( !initialize(scale) ) {
+		printf( "Failed to initialize!\n" );
+		return 1;
+	}
 
     bool quit = false;
 
@@ -79,12 +81,13 @@ int main( int argc, char* args[] )
             dt = (time + 1) - prevTime;
         }
 
-        loop(gWindow, dt, frame);
+		SDL_RenderClear(renderer);
+
+        loop(renderer, dt, frame);
 
         prevTime = time;
 
-        //Update the surface
-        SDL_UpdateWindowSurface( gWindow );
+		SDL_RenderPresent(renderer);
 
         frame ++;
     }
@@ -93,4 +96,20 @@ int main( int argc, char* args[] )
     close();
 
     return 0;
+}
+
+int parseScale(int argc, char* args[]) {
+	int scale = DEFAULT_SCALE;
+	if (argc <= 1) {
+		printf("Supply a scale argument for a different scale.");
+		return scale;
+	}
+	int scaleArg = atoi(args[1]);
+	if (scaleArg != NULL) {
+		return scaleArg;
+	} else {
+		return scale;
+	}
+
+
 }
