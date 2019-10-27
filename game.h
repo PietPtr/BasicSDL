@@ -1,7 +1,9 @@
-#ifndef LOOP_H
-#define LOOP_H
+#ifndef INIT_H
+#define INIT_H
 
 #include <SDL.h>
+
+void init();
 
 int event(SDL_Event* event);
 
