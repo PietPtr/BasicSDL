@@ -101,7 +101,7 @@ int main( int argc, char* args[] )
 int parseScale(int argc, char* args[]) {
 	int scale = DEFAULT_SCALE;
 	if (argc <= 1) {
-		printf("Supply a scale argument for a different scale.");
+		printf("Supply a scale argument for a different scale.\n");
 		return scale;
 	}
 	int scaleArg = atoi(args[1]);
