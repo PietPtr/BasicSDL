@@ -30,7 +30,7 @@ void loop(SDL_Renderer* renderer, double dt, int frame)
 
     drawAt(renderer, tHello, (int)(sin((double)totalTime * 4) * 100), 0);
 
-    if ( frame % 1000 == 0 ) {
+    if ( frame % 5000 == 0 ) {
         printf("%f\n", 1 / dt);
     }
 }
